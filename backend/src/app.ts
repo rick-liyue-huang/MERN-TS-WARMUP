@@ -1,28 +1,30 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { NoteModel } from './models/note';
+import { notesRouter } from './routes/notes';
+import morgan from 'morgan';
+import createHttpError, { isHttpError } from 'http-errors';
 
 export const app = express();
 
-app.get('/', async (req, res, next) => {
-  try {
-    // throw Error('Oops!');
-    const notes = await NoteModel.find().exec();
-    res.status(200).json(notes);
-  } catch (err) {
-    next(err);
-  }
-});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
+
+app.use('/api/notes', notesRouter);
 
 app.use((req, res, next) => {
-  next(Error('Endpoint not found'));
+  next(createHttpError(404, 'Endpoint not found'));
 });
 
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.error(error);
   let errorMsg = 'An unknown error occurred';
-  if (error instanceof Error) {
+  let statusCode = 500;
+
+  if (isHttpError(error)) {
+    statusCode = error.status;
     errorMsg = error.message;
   }
-  res.status(500).json({ error: errorMsg });
+
+  res.status(statusCode).json({ error: errorMsg });
   next();
 });
