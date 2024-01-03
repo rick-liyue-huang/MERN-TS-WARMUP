@@ -1,12 +1,19 @@
-import express from 'express';
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import env from './utils/validateEnv';
+import { app } from './app';
 
-const app = express();
-const PORT = 3333;
+const PORT = env.PORT;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+mongoose
+  .connect(env.MONGODB_CONNECTION_STRING)
+  .then(() => {
+    console.log('MongoDB connected!');
 
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}!`);
-});
+    app.listen(PORT, () => {
+      console.log(`Server started on port ${PORT}!`);
+    });
+  })
+  .catch((err) => {
+    console.error(err);
+  });
