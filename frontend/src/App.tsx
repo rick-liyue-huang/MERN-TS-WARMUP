@@ -4,12 +4,13 @@ import { NoteComp } from './components/Note';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import styles from './styles/NotesPage.module.css';
 import { getNotes, deleteNote } from './network/notes_api';
-import { AddNoteModal } from './components/AddNoteModal';
+import { AddEditNoteModal } from './components/AddEditNoteModal';
 import UtilsStyle from './styles/utils.module.css';
 
 function App() {
   const [notes, setNotes] = React.useState<NoteI[]>([]);
   const [showAddNoteModal, setShowAddNoteModal] = React.useState(false);
+  const [noteToEdit, setNoteToEdit] = React.useState<NoteI | null>(null);
 
   React.useEffect(() => {
     async function fetchNotes() {
@@ -54,17 +55,28 @@ function App() {
               note={note}
               className={styles.note}
               onDeleteClick={() => handleDelete(note)}
+              onNoteEdit={(note) => setNoteToEdit(note)}
             />
           </Col>
         ))}
       </Row>
       {showAddNoteModal && (
-        <AddNoteModal
+        <AddEditNoteModal
           onDismiss={() => setShowAddNoteModal(false)}
           onNoteSave={(note) => {
             setNotes([...notes, note]);
             setShowAddNoteModal(false);
           }}
+        />
+      )}
+      {noteToEdit && (
+        <AddEditNoteModal
+          onDismiss={() => setNoteToEdit(null)}
+          onNoteSave={(note) => {
+            setNotes(notes.map((n) => (n._id === note._id ? note : n)));
+            setNoteToEdit(null);
+          }}
+          editNote={noteToEdit}
         />
       )}
     </Container>

@@ -10,8 +10,14 @@ interface NoteCompProps {
   note: NoteI;
   onDeleteClick: (note: NoteI) => void;
   className?: string;
+  onNoteEdit: (note: NoteI) => void;
 }
-export const NoteComp = ({ note, className, onDeleteClick }: NoteCompProps) => {
+export const NoteComp = ({
+  note,
+  className,
+  onDeleteClick,
+  onNoteEdit,
+}: NoteCompProps) => {
   const { title, text, createdAt, updatedAt } = note;
 
   let createdUpdatedText = '';
@@ -23,7 +29,10 @@ export const NoteComp = ({ note, className, onDeleteClick }: NoteCompProps) => {
   }
 
   return (
-    <Card className={`${styles.noteCard} ${className}`}>
+    <Card
+      className={`${styles.noteCard} ${className}`}
+      onClick={() => onNoteEdit(note)}
+    >
       <Card.Body className={styles.cardBody}>
         <Card.Title className={utilsStyle.flexCenter}>
           {title}{' '}

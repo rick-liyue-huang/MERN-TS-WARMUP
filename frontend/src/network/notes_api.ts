@@ -39,4 +39,16 @@ export async function deleteNote(noteId: string) {
   });
 }
 
-export async function updateNote() {}
+export async function updateNote(
+  nodeId: string,
+  note: CreateNoteRequestBody
+): Promise<NoteI> {
+  const response = await fetchData(`/api/notes/${nodeId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(note),
+  });
+  return response.json();
+}
