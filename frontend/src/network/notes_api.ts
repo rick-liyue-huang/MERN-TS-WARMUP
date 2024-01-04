@@ -1,6 +1,6 @@
 import { NoteI } from '../models/note';
 
-async function fetchData(input: RequestInfo, init?: RequestInit) {
+export async function fetchData(input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init);
   if (response.ok) {
     return response;

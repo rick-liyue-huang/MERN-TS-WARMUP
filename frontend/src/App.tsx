@@ -6,6 +6,8 @@ import styles from './styles/NotesPage.module.css';
 import { getNotes, deleteNote } from './network/notes_api';
 import { AddEditNoteModal } from './components/AddEditNoteModal';
 import UtilsStyle from './styles/utils.module.css';
+import { SignupModal } from './components/SignupModal';
+import { LoginModal } from './components/LoginModal';
 
 function App() {
   const [notes, setNotes] = React.useState<NoteI[]>([]);
@@ -95,6 +97,13 @@ function App() {
           }}
           editNote={noteToEdit}
         />
+      )}
+
+      {false && (
+        <SignupModal onDismiss={() => {}} onSignupSuccessfully={() => {}} />
+      )}
+      {false && (
+        <LoginModal onDismiss={() => {}} onLoginSuccessfully={() => {}} />
       )}
     </Container>
   );

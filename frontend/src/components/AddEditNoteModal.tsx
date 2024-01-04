@@ -7,6 +7,7 @@ import {
   createNote,
   updateNote,
 } from '../network/notes_api';
+import { TextInputField } from './form/TextInputField';
 
 interface AddEditNoteModalProps {
   onDismiss: () => void;
@@ -54,6 +55,7 @@ export const AddEditNoteModal = ({
       </Modal.Header>
       <Modal.Body>
         <Form id='addEditNoteForm' onSubmit={handleSubmit(onSubmitted)}>
+          {/*
           <Form.Group className='mb-3'>
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -66,6 +68,19 @@ export const AddEditNoteModal = ({
               {errors.title?.message}
             </Form.Control.Feedback>
           </Form.Group>
+  */}
+
+          <TextInputField
+            label='Title'
+            name='title'
+            register={register}
+            registerOptions={{ required: true }}
+            error={errors.title}
+            type='text'
+            placeholder='Enter title'
+          />
+
+          {/*
           <Form.Group className='mb-3'>
             <Form.Label>Content</Form.Label>
             <Form.Control
@@ -75,6 +90,17 @@ export const AddEditNoteModal = ({
               {...register('text')}
             />
           </Form.Group>
+
+*/}
+
+          <TextInputField
+            label='Content'
+            name='text'
+            register={register}
+            as='textarea'
+            rows={5}
+            placeholder='Enter text'
+          />
         </Form>
       </Modal.Body>
       <Modal.Footer>
