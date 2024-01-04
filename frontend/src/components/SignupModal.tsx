@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInputField } from './form/TextInputField';
+import { TextInputField } from './TextInputField';
 import { UserI } from '../models/user';
 import { useForm } from 'react-hook-form';
 import { SignUpRequestBody, signUp } from '../network/user_api';

@@ -7,7 +7,7 @@ import {
   createNote,
   updateNote,
 } from '../network/notes_api';
-import { TextInputField } from './form/TextInputField';
+import { TextInputField } from './TextInputField';
 
 interface AddEditNoteModalProps {
   onDismiss: () => void;

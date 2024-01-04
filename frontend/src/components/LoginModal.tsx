@@ -3,7 +3,7 @@ import { UserI } from '../models/user';
 import { useForm } from 'react-hook-form';
 import { LoginRequestBody, login } from '../network/user_api';
 import { Button, Form, Modal } from 'react-bootstrap';
-import { TextInputField } from './form/TextInputField';
+import { TextInputField } from './TextInputField';
 
 interface LoginModalProps {
   onDismiss: () => void;
@@ -26,7 +26,7 @@ export const LoginModal = ({
       onLoginSuccessfully(user);
     } catch (err) {
       console.log(err);
-      alert('Error signing up');
+      alert('Error logging in');
     }
   }
 
@@ -36,7 +36,7 @@ export const LoginModal = ({
         <Modal.Title>Login</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form id='loginForm'>
+        <Form id='loginForm' onSubmit={handleSubmit(onSubmitted)}>
           <TextInputField
             name='username'
             label='Username'
