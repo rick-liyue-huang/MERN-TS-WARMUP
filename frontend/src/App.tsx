@@ -3,7 +3,7 @@ import { NoteI } from './models/note';
 import { NoteComp } from './components/Note';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import styles from './styles/NotesPage.module.css';
-import { getNotes } from './network/notes_api';
+import { getNotes, deleteNote } from './network/notes_api';
 import { AddNoteModal } from './components/AddNoteModal';
 import UtilsStyle from './styles/utils.module.css';
 
@@ -29,6 +29,16 @@ function App() {
     fetchNotes();
   }, []);
 
+  async function handleDelete(note: NoteI) {
+    try {
+      await deleteNote(note._id);
+      setNotes(notes.filter((n) => n._id !== note._id));
+    } catch (err) {
+      console.log(err);
+      alert('Error deleting note');
+    }
+  }
+
   return (
     <Container>
       <Button
@@ -40,7 +50,11 @@ function App() {
       <Row xs={1} md={2} xl={3} className='g-2'>
         {notes.map((note) => (
           <Col key={note._id}>
-            <NoteComp note={note} className={styles.note} />
+            <NoteComp
+              note={note}
+              className={styles.note}
+              onDeleteClick={() => handleDelete(note)}
+            />
           </Col>
         ))}
       </Row>
