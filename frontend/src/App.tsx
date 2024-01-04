@@ -1,7 +1,7 @@
 import React from 'react';
 import { NoteI } from './models/note';
 import { NoteComp } from './components/Note';
-import { Button, Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row, Spinner } from 'react-bootstrap';
 import styles from './styles/NotesPage.module.css';
 import { getNotes, deleteNote } from './network/notes_api';
 import { AddEditNoteModal } from './components/AddEditNoteModal';
@@ -11,6 +11,9 @@ function App() {
   const [notes, setNotes] = React.useState<NoteI[]>([]);
   const [showAddNoteModal, setShowAddNoteModal] = React.useState(false);
   const [noteToEdit, setNoteToEdit] = React.useState<NoteI | null>(null);
+  const [notesLoading, setNotesLoading] = React.useState(true);
+  const [showNotesLoadingError, setShowNotesLoadingError] =
+    React.useState(false);
 
   React.useEffect(() => {
     async function fetchNotes() {
@@ -20,11 +23,17 @@ function App() {
         //   method: 'GET',
         // });
         // const json = await response.json();
+        setShowNotesLoadingError(false);
+        setNotesLoading(true);
+
         const notes = await getNotes();
         setNotes(notes);
       } catch (err) {
         console.log(err);
-        alert('Error fetching notes');
+        // alert('Error fetching notes');
+        setShowNotesLoadingError(true);
+      } finally {
+        setNotesLoading(false);
       }
     }
     fetchNotes();
@@ -40,26 +49,34 @@ function App() {
     }
   }
 
+  const notesRow = (
+    <Row xs={1} md={2} xl={3} className={`g-2 ${styles.noteRow}`}>
+      {notes.map((note) => (
+        <Col key={note._id}>
+          <NoteComp
+            note={note}
+            className={styles.note}
+            onDeleteClick={() => handleDelete(note)}
+            onNoteEdit={(note) => setNoteToEdit(note)}
+          />
+        </Col>
+      ))}
+    </Row>
+  );
+
   return (
-    <Container>
+    <Container className={styles.notesPage}>
       <Button
         onClick={() => setShowAddNoteModal(true)}
         className={`my-2 ${UtilsStyle.blockCenter}`}
       >
         Show Dialog
       </Button>
-      <Row xs={1} md={2} xl={3} className='g-2'>
-        {notes.map((note) => (
-          <Col key={note._id}>
-            <NoteComp
-              note={note}
-              className={styles.note}
-              onDeleteClick={() => handleDelete(note)}
-              onNoteEdit={(note) => setNoteToEdit(note)}
-            />
-          </Col>
-        ))}
-      </Row>
+      {notesLoading && <Spinner animation='border' variant='primary' />}
+      {showNotesLoadingError && <div>Error loading notes</div>}
+      {!notesLoading && !showNotesLoadingError && (
+        <>{notes.length > 0 ? notesRow : <div>No notes show </div>}</>
+      )}
       {showAddNoteModal && (
         <AddEditNoteModal
           onDismiss={() => setShowAddNoteModal(false)}
