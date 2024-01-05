@@ -98,14 +98,13 @@ export const loginController: RequestHandler<
 };
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
-  const authenticatedUserId = req.session.userId;
-
+  // const authenticatedUserId = req.session.userId;
   try {
-    if (!authenticatedUserId) {
-      throw createHttpError(401, 'Un authenticated user');
-    }
+    // if (!authenticatedUserId) {
+    //   throw createHttpError(401, 'Un authenticated user');
+    // }
 
-    const user = await UserModel.findById(authenticatedUserId)
+    const user = await UserModel.findById(req.session.userId)
       .select('+email')
       .exec();
     return res.status(200).json(user);

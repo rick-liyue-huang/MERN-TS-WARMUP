@@ -5,11 +5,12 @@ import {
   signUpController,
   logoutController,
 } from '../controllers/users';
+import { requiresAuth } from '../middlewares/auth';
 
 export const usersRouter = express.Router();
 
 usersRouter
   .post('/signup', signUpController)
   .post('/login', loginController)
-  .get('/', getAuthenticatedUser)
+  .get('/', requiresAuth, getAuthenticatedUser)
   .post('/logout', logoutController);

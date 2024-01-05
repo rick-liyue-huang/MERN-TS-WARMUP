@@ -6,6 +6,7 @@ import { usersRouter } from './routes/users';
 import session from 'express-session';
 import env from './utils/validateEnv';
 import MongoStore from 'connect-mongo';
+import { requiresAuth } from './middlewares/auth';
 
 export const app = express();
 
@@ -28,7 +29,7 @@ app.use(
   })
 );
 
-app.use('/api/notes', notesRouter);
+app.use('/api/notes', requiresAuth, notesRouter);
 app.use('/api/users', usersRouter);
 
 app.use((req, res, next) => {
