@@ -3,7 +3,8 @@ import { TextInputField } from './TextInputField';
 import { UserI } from '../models/user';
 import { useForm } from 'react-hook-form';
 import { SignUpRequestBody, signUp } from '../network/user_api';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
+import { ConflictError } from '../errors/http_errors';
 
 interface SignupModalProps {
   onDismiss: () => void;
@@ -14,6 +15,8 @@ export const SignupModal = ({
   onDismiss,
   onSignupSuccessfully,
 }: SignupModalProps) => {
+  const [errorText, setErrorText] = React.useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -25,8 +28,12 @@ export const SignupModal = ({
       const newUser = await signUp(input);
       onSignupSuccessfully(newUser);
     } catch (err) {
+      if (err instanceof ConflictError) {
+        setErrorText('Username already exists');
+      } else {
+        alert('Error signing up');
+      }
       console.log(err);
-      alert('Error signing up');
     }
   }
 
@@ -36,6 +43,7 @@ export const SignupModal = ({
         <Modal.Title>Sign Up</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {errorText && <Alert variant='danger'>{errorText}</Alert>}
         <Form id='signupForm' onSubmit={handleSubmit(onSubmitted)}>
           <TextInputField
             name='username'
